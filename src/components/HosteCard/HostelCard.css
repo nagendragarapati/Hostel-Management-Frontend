@@ -1,0 +1,121 @@
+.hostel-card-main-container {
+    list-style: none;
+    width: 250px;
+    border-radius: 10px;
+    margin: 14px;
+    cursor: pointer;
+    border-radius: 10px !important;
+}
+
+
+.hostel-main-img {
+    width: 250px;
+    height: 160px;
+    position: absolute;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.fav-icon-container {
+    position: relative;
+    width: 240px;
+    height: 50px;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+.fav-icon {
+    color: #fff;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.fav-icon:hover {
+    transform: scale(1.5);
+    transition: 0.5s ease;
+
+}
+
+.name-rating-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.item-link {
+    text-decoration: none;
+    color: black;
+}
+
+.hostel-name {
+    font-family: 'Roboto';
+    font-size: 20px;
+    margin: 0;
+    font-weight: 500;
+    width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.hostel-name:hover {
+    max-width: none;
+    white-space: normal;
+}
+
+.card-text-container {
+    padding: 15px;
+    height: 85px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-top: 115px;
+
+}
+
+.rating-container {
+    display: flex;
+    align-items: center;
+}
+
+.rating-text {
+    margin: 0;
+    font-weight: 400;
+    font-family: 'Roboto';
+    font-size: 16px;
+    margin-right: 1px;
+}
+
+.rating-icon {
+    font-size: 19px !important;
+}
+
+.icon-container {
+    border-radius: 50px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
+.success-back {
+    background: green;
+}
+
+.alert-back {
+    background-color: #f18506;
+}
+
+.danger-back {
+    background-color: red;
+}
+
+.area-text,
+.city-text {
+    margin: 0;
+    font-size: 16px;
+    font-family: 'Roboto';
+    color: #0d0f1191;
+}

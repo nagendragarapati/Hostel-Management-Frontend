@@ -1,0 +1,11 @@
+
+.skeleton-main-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.skeleton-img{
+    border-radius: 10px !important;
+}
+

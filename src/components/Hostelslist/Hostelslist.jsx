@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import {
     Box, Grid, Typography, Paper, FormControl,
     InputLabel, MenuItem, Select, CircularProgress,
-    FormHelperText, Button, Snackbar, Alert
+    FormHelperText, Button, Snackbar, Alert, Skeleton
 } from '@mui/material';
 
 import {
@@ -10,6 +10,8 @@ import {
     fetchAreas,
     fetchHostels
 } from '../../services/HostelsListService';
+import HostelCard from '../HosteCard/HostelCard';
+import HostelCardSkeleton from '../HostelCardSkeleton/HostelCardSkeleton';
 
 import './HostelsList.css';
 
@@ -22,12 +24,15 @@ const HostelsList = () => {
 
     const [loadingCities, setLoadingCities] = useState(true);
     const [loadingAreas, setLoadingAreas] = useState(false);
+    const [loadingHostels, setLoadingHostels] = useState(false);
     const [errors, setErrors] = useState({ city: false, area: false });
     const [hostelError, setHostelError] = useState('');
     const [openErrorToast, setOpenErrorToast] = useState(false);
     const [submitClicked, setSubmitClicked] = useState(false);
 
     const secondBoxRef = useRef(null);
+
+    console.log("hostels", hostels)
 
     useEffect(() => {
         const loadCities = async () => {
@@ -58,7 +63,7 @@ const HostelsList = () => {
             const data = await fetchAreas(city);
             setAreas(data);
         } catch {
-            setHostelError('Failed to load areas.');
+            setHostelError('Failed to load areas');
             setOpenErrorToast(true);
         } finally {
             setLoadingAreas(false);
@@ -72,6 +77,13 @@ const HostelsList = () => {
 
         if (!hasCity || !hasArea) return;
 
+        setSubmitClicked(true);
+        setLoadingHostels(true);
+
+        setTimeout(() => {
+            secondBoxRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+
         try {
             const data = await fetchHostels(selectedCity, selectedArea);
             setHostels(data);
@@ -80,17 +92,12 @@ const HostelsList = () => {
                 setHostelError('No hostels found for this area.');
                 setOpenErrorToast(true);
             }
-
-            setSubmitClicked(true);
-
-            // Always scroll down
-            setTimeout(() => {
-                secondBoxRef.current?.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
         } catch {
             setHostelError('Failed to fetch hostels.');
             setOpenErrorToast(true);
             setHostels([]);
+        } finally {
+            setLoadingHostels(false);
         }
     };
 
@@ -232,23 +239,28 @@ const HostelsList = () => {
                     </Grid>
                 </Grid>
             </Box>
-
             {submitClicked && (
                 <Box ref={secondBoxRef} className="second-box" sx={{ px: 2, py: 4 }}>
-                    <Typography variant="h5" mb={2}>
-                        Hostels List
+                    <Typography variant="h5" sx={{ mb: 2, textAlign:'center' }}>
+                        Hostels in Your Area
                     </Typography>
-                    {hostels.length === 0 ? (
-                        <Typography>No hostels found</Typography>
+
+                    {loadingHostels ? (
+                        <HostelCardSkeleton />
+                    ) : hostels.length === 0 ? (
+                        <Typography sx={{ mb: 2, textAlign:'center' }}>No hostels found</Typography>
                     ) : (
-                        hostels.map((hostel, index) => (
-                            <Box key={index} sx={{ mb: 2, p: 2, background: '#eee', borderRadius: 2 }}>
-                                <Typography>{hostel.name}</Typography>
-                            </Box>
-                        ))
+
+                        <ul className='hostels-list-conatiner'>
+                            {
+                                hostels.map((hostel) => <HostelCard hostel={hostel} key={hostel.id} />)
+                            }
+                        </ul>
+
                     )}
                 </Box>
             )}
+
 
             <Snackbar
                 open={openErrorToast}
