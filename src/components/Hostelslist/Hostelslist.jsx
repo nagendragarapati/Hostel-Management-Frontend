@@ -104,151 +104,145 @@ const HostelsList = () => {
     return (
         <div className="list-main-container">
             <Box className="first-box">
-                <Grid container spacing={2} flexDirection={{ xs: 'column', sm: 'row' }}>
-                    <Grid item xs={12} sm={5}>
-                        <div className="select-city-container">
-                            <Paper
-                                elevation={10}
-                                className="paper-card"
+                <div className="select-city-container">
+                    <Paper
+                        elevation={10}
+                        className="paper-card"
+                        sx={{
+                            height: { xs: 'auto', sm: 350 },
+                            padding: { xs: 3, sm: 5 },
+                            marginTop: { xs: 4, sm: 8 },
+                            borderRadius: 2,
+                            background: 'linear-gradient(to right, #20202efa 0%, #050522d9 0%, #5a5dbb 100%)',
+                            color: 'black',
+                        }}
+                    >
+                        <Typography variant="h6" className="hero-heading">
+                            Find Hostels That Fit Your Life — Fast & Easy
+                        </Typography>
+
+                        <form className="form-container">
+                            {/* City Dropdown */}
+                            <FormControl
+                                fullWidth
+                                error={errors.city}
                                 sx={{
-                                    height: { xs: 'auto', sm: 350 },
-                                    padding: { xs: 3, sm: 5 },
-                                    marginTop: { xs: 4, sm: 8 },
-                                    borderRadius: 2,
-                                    background: 'linear-gradient(to right, #20202efa 0%, #050522d9 0%, #5a5dbb 100%)',
-                                    color: 'black',
+                                    width: { xs: '100%', sm: 250 },
+                                    '& .MuiInputLabel-root': { color: '#fff' },
+                                    '& .MuiOutlinedInput-root': {
+                                        color: '#fff',
+                                        '& fieldset': { borderColor: '#fff' },
+                                        '&:hover fieldset': { borderColor: '#fff' },
+                                        '&.Mui-focused fieldset': { borderColor: '#fff' },
+                                        '& svg': { color: '#fff' },
+                                    },
                                 }}
                             >
-                                <Typography variant="h6" className="hero-heading">
-                                    Find Hostels That Fit Your Life — Fast & Easy
-                                </Typography>
+                                <InputLabel>Select City</InputLabel>
+                                <Select
+                                    value={selectedCity}
+                                    label="Select City"
+                                    onChange={handleCityChange}
+                                    endAdornment={
+                                        loadingCities && (
+                                            <Box className="loader-box-container">
+                                                <CircularProgress size={22} thickness={5} className="loader-color" />
+                                            </Box>
+                                        )
+                                    }
+                                >
+                                    {cities.map((city) => (
+                                        <MenuItem key={city} value={city}>
+                                            {city}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                                {errors.city && <FormHelperText>City is required</FormHelperText>}
+                            </FormControl>
 
-                                <form className="form-container">
-                                    {/* City Dropdown */}
-                                    <FormControl
-                                        fullWidth
-                                        error={errors.city}
-                                        sx={{
-                                            width: { xs: '100%', sm: 250 },
-                                            '& .MuiInputLabel-root': { color: '#fff' },
-                                            '& .MuiOutlinedInput-root': {
-                                                color: '#fff',
-                                                '& fieldset': { borderColor: '#fff' },
-                                                '&:hover fieldset': { borderColor: '#fff' },
-                                                '&.Mui-focused fieldset': { borderColor: '#fff' },
-                                                '& svg': { color: '#fff' },
-                                            },
-                                        }}
-                                    >
-                                        <InputLabel>Select City</InputLabel>
-                                        <Select
-                                            value={selectedCity}
-                                            label="Select City"
-                                            onChange={handleCityChange}
-                                            endAdornment={
-                                                loadingCities && (
-                                                    <Box className="loader-box-container">
-                                                        <CircularProgress size={22} thickness={5} className="loader-color" />
-                                                    </Box>
-                                                )
-                                            }
-                                        >
-                                            {cities.map((city) => (
-                                                <MenuItem key={city} value={city}>
-                                                    {city}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                        {errors.city && <FormHelperText>City is required</FormHelperText>}
-                                    </FormControl>
+                            {/* Area Dropdown */}
+                            <FormControl
+                                fullWidth
+                                error={errors.area}
+                                sx={{
+                                    width: { xs: '100%', sm: 250 },
+                                    '& .MuiInputLabel-root': {
+                                        color: errors.area ? '#f44336' : '#fff',
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        color: '#fff',
+                                        '& fieldset': {
+                                            borderColor: errors.area ? '#f44336' : '#fff',
+                                        },
+                                        '&:hover fieldset': { borderColor: '#fff' },
+                                        '&.Mui-focused fieldset': { borderColor: '#fff' },
+                                    },
+                                    '& .MuiSelect-icon': { color: '#fff' },
+                                    '& .MuiSelect-select': { color: '#fff' },
+                                }}
+                            >
+                                <InputLabel>Select Area</InputLabel>
+                                <Select
+                                    value={selectedArea}
+                                    label="Select Area"
+                                    onChange={(e) => setSelectedArea(e.target.value)}
+                                    onMouseDown={(e) => {
+                                        if (!selectedCity) {
+                                            e.preventDefault();
+                                            setErrors((prev) => ({ ...prev, city: true }));
+                                        }
+                                    }}
+                                    endAdornment={
+                                        loadingAreas && (
+                                            <Box className="loader-box-container">
+                                                <CircularProgress size={22} thickness={5} className="loader-color" />
+                                            </Box>
+                                        )
+                                    }
+                                >
+                                    {areas.map((area) => (
+                                        <MenuItem key={area} value={area}>
+                                            {area}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                                {errors.area && <FormHelperText>Area is required</FormHelperText>}
+                            </FormControl>
 
-                                    {/* Area Dropdown */}
-                                    <FormControl
-                                        fullWidth
-                                        error={errors.area}
-                                        sx={{
-                                            width: { xs: '100%', sm: 250 },
-                                            '& .MuiInputLabel-root': {
-                                                color: errors.area ? '#f44336' : '#fff',
-                                            },
-                                            '& .MuiOutlinedInput-root': {
-                                                color: '#fff',
-                                                '& fieldset': {
-                                                    borderColor: errors.area ? '#f44336' : '#fff',
-                                                },
-                                                '&:hover fieldset': { borderColor: '#fff' },
-                                                '&.Mui-focused fieldset': { borderColor: '#fff' },
-                                            },
-                                            '& .MuiSelect-icon': { color: '#fff' },
-                                            '& .MuiSelect-select': { color: '#fff' },
-                                        }}
-                                    >
-                                        <InputLabel>Select Area</InputLabel>
-                                        <Select
-                                            value={selectedArea}
-                                            label="Select Area"
-                                            onChange={(e) => setSelectedArea(e.target.value)}
-                                            onMouseDown={(e) => {
-                                                if (!selectedCity) {
-                                                    e.preventDefault();
-                                                    setErrors((prev) => ({ ...prev, city: true }));
-                                                }
-                                            }}
-                                            endAdornment={
-                                                loadingAreas && (
-                                                    <Box className="loader-box-container">
-                                                        <CircularProgress size={22} thickness={5} className="loader-color" />
-                                                    </Box>
-                                                )
-                                            }
-                                        >
-                                            {areas.map((area) => (
-                                                <MenuItem key={area} value={area}>
-                                                    {area}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
-                                        {errors.area && <FormHelperText>Area is required</FormHelperText>}
-                                    </FormControl>
+                            <div className="btn-container">
+                                <Button
+                                    variant="contained"
+                                    onClick={handleSubmit}
+                                    sx={{
+                                        outline: 'none',
+                                        boxShadow: 'none',
+                                        '&:focus': {
+                                            outline: 'none',
+                                            boxShadow: 'none',
+                                        },
+                                    }}
+                                >
+                                    Find Hostels
+                                </Button>
+                            </div>
+                        </form>
+                    </Paper>
+                </div>
 
-                                    <div className="btn-container">
-                                        <Button
-                                            variant="contained"
-                                            onClick={handleSubmit}
-                                            sx={{
-                                                outline: 'none',
-                                                boxShadow: 'none',
-                                                '&:focus': {
-                                                    outline: 'none',
-                                                    boxShadow: 'none',
-                                                },
-                                            }}
-                                        >
-                                            Find Hostels
-                                        </Button>
-                                    </div>
-                                </form>
-                            </Paper>
-                        </div>
-                    </Grid>
-
-                    <Grid item xs={12} sm={7}>
-                        <div className="select-hostel-container">
-                            {/* Optional: Add illustrations or promotional content */}
-                        </div>
-                    </Grid>
-                </Grid>
+                <div className="select-hostel-container">
+                    {/* Optional: Add illustrations or promotional content */}
+                </div>
             </Box>
             {submitClicked && (
                 <Box ref={secondBoxRef} className="second-box" sx={{ px: 2, py: 4 }}>
-                    <Typography variant="h5" sx={{ mb: 2, textAlign:'center' }}>
+                    <Typography variant="h5" className='hero-heading-2'>
                         Hostels in Your Area
                     </Typography>
 
                     {loadingHostels ? (
                         <HostelCardSkeleton />
                     ) : hostels.length === 0 ? (
-                        <Typography sx={{ mb: 2, textAlign:'center' }}>No hostels found</Typography>
+                        <Typography sx={{ mb: 2, textAlign: 'center' }}>No hostels found</Typography>
                     ) : (
 
                         <ul className='hostels-list-conatiner'>

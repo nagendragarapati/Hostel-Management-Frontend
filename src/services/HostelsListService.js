@@ -6,7 +6,7 @@ const HEADERS = { 'ngrok-skip-browser-warning': 'true' };
 
 export const fetchCities = async () => {
     try {
-        const response = await axios.get(`${BASE_URL}/cities`, { headers: HEADERS });
+        const response = await axios.get(`${BASE_URL}/hostels/cities`, { headers: HEADERS });
         return response.data?.data || [];
     } catch (error) {
         console.error('Error fetching cities:', error);
@@ -16,7 +16,7 @@ export const fetchCities = async () => {
 
 export const fetchAreas = async (city) => {
     try {
-        const response = await axios.get(`${BASE_URL}/areas?city=${encodeURIComponent(city)}`, {
+        const response = await axios.get(`${BASE_URL}/hostels/areas?city=${encodeURIComponent(city)}`, {
             headers: HEADERS
         });
         return response.data?.data || [];
@@ -29,7 +29,7 @@ export const fetchAreas = async (city) => {
 export const fetchHostels = async (city, area) => {
     try {
         const response = await axios.get(
-            `${BASE_URL}/hostels?city=${encodeURIComponent(city)}&area=${encodeURIComponent(area)}`,
+            `${BASE_URL}/hostels/all-hostels?city=${encodeURIComponent(city)}&area=${encodeURIComponent(area)}`,
             { headers: HEADERS }
         );
         return response.data?.data || [];

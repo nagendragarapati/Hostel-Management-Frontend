@@ -5,20 +5,24 @@ import StarsIcon from '@mui/icons-material/Stars';
 import { getRatingClr } from '../../utils/utils';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
+import { Link } from 'react-router-dom';
 import "./HostelCard.css"
 
 
 const HostelCard = ({ hostel }) => {
-    const { name, area, city } = hostel
+
+    const { name, area, city, id,rating,roomTypes,type,hasDayStay } = hostel
 
 
 
     return (
-        <Box>
+        <Link to={`hostel/${id}`} className='nav-link-hostel'>
             <Paper elevation={3} className="hostel-card-main-container" >
                 <div className='image-fav-container'>
-                    <img src='https://res.cloudinary.com/dxww8lp4l/image/upload/v1754118177/hostel1_klhj8j.webp' alt={`${name}-img`} className="hostel-main-img" />
+                    <img src='https://res.cloudinary.com/dxww8lp4l/image/upload/v1754204061/hostel5_cnamuw.jpg' alt={`${name}-img`} className="hostel-main-img" />
                     <div className='fav-icon-container'>
+                        <div className={`day-stay-container ${!hasDayStay && 'day-stay-invisible'}`}><p className='day-stay-text'>Day Stay Available</p></div>
+                        
                         <FavoriteBorderRoundedIcon className='fav-icon' />
                         {/* <FavoriteRoundedIcon className='fav-icon'  color='error'/> */}
                     </div>
@@ -28,16 +32,23 @@ const HostelCard = ({ hostel }) => {
                         <p className="hostel-name">{name}</p>
                         <div className="rating-icon-container">
                             <div className='rating-container'>
-                                <p className='rating-text'>4</p>
-                                <StarsIcon color={`${getRatingClr(4)}`} className='rating-icon' />
+                                <p className='rating-text'>{rating}</p>
+                                <StarsIcon color={`${getRatingClr(rating)}`} className='rating-icon' />
                             </div>
                         </div>
                     </div>
                     <p className='area-text'>{area}</p>
                     <p className='city-text'>{city}</p>
+
+                    <div className='types-container'>
+                        {
+                            roomTypes.map((type,i)=><span key={i} className='room-type-text'>{type}</span>)
+                        }
+                        <span className='room-type-text'>{type}</span>
+                    </div>
                 </div>
             </Paper>
-        </Box>
+        </Link>
 
     )
 }
