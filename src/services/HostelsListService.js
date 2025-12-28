@@ -1,7 +1,7 @@
 // services/HostelsListService.js
 import axios from 'axios';
 
-const BASE_URL = 'https://686e6aca3c1d.ngrok-free.app';
+const BASE_URL = 'https://1ca87b10c9a8.ngrok-free.app';
 const HEADERS = { 'ngrok-skip-browser-warning': 'true' };
 
 export const fetchCities = async () => {

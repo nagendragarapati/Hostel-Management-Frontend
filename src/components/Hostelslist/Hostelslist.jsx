@@ -2,8 +2,9 @@ import { useEffect, useState, useRef } from 'react';
 import {
     Box, Grid, Typography, Paper, FormControl,
     InputLabel, MenuItem, Select, CircularProgress,
-    FormHelperText, Button, Snackbar, Alert, Skeleton
+    FormHelperText, Button, Snackbar, Alert, Skeleton, TextField
 } from '@mui/material';
+import { useSearchParams, useNavigate } from 'react-router-dom'; // ✅ added for URL params
 
 import {
     fetchCities,
@@ -30,10 +31,13 @@ const HostelsList = () => {
     const [openErrorToast, setOpenErrorToast] = useState(false);
     const [submitClicked, setSubmitClicked] = useState(false);
 
+    const [searchParams, setSearchParams] = useSearchParams(); // ✅
     const secondBoxRef = useRef(null);
+    const lastQueryRef = useRef({ city: '', area: '' }); // ✅ to prevent duplicate calls
 
-    console.log("hostels", hostels)
+    console.log("hostels", hostels);
 
+    // Load cities once
     useEffect(() => {
         const loadCities = async () => {
             try {
@@ -47,6 +51,35 @@ const HostelsList = () => {
             }
         };
         loadCities();
+    }, []);
+
+    // Restore state from URL params on initial mount
+    useEffect(() => {
+        const city = searchParams.get('city');
+        const area = searchParams.get('area');
+
+        if (city) setSelectedCity(city);
+        if (area) setSelectedArea(area);
+
+        if (city) {
+            setLoadingAreas(true);
+            fetchAreas(city)
+                .then((data) => setAreas(data))
+                .catch(() => {
+                    setHostelError('Failed to load areas');
+                    setOpenErrorToast(true);
+                })
+                .finally(() => setLoadingAreas(false));
+        }
+
+        if (city && area) {
+            // ✅ Avoid duplicate call if already fetched
+            fetchHostelsData(city, area);
+            setSubmitClicked(true);
+            setTimeout(() => {
+                secondBoxRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
     }, []);
 
     const handleCityChange = async (e) => {
@@ -70,23 +103,15 @@ const HostelsList = () => {
         }
     };
 
-    const handleSubmit = async () => {
-        const hasCity = !!selectedCity;
-        const hasArea = !!selectedArea;
-        setErrors({ city: !hasCity, area: !hasArea });
+    const fetchHostelsData = async (city, area) => {
+        // ✅ prevent duplicate call if values didn't change
+        if (lastQueryRef.current.city === city && lastQueryRef.current.area === area) return;
 
-        if (!hasCity || !hasArea) return;
-
-        setSubmitClicked(true);
         setLoadingHostels(true);
-
-        setTimeout(() => {
-            secondBoxRef.current?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-
         try {
-            const data = await fetchHostels(selectedCity, selectedArea);
+            const data = await fetchHostels(city, area);
             setHostels(data);
+            lastQueryRef.current = { city, area }; // ✅ store latest values
 
             if (data.length === 0) {
                 setHostelError('No hostels found for this area.');
@@ -99,6 +124,22 @@ const HostelsList = () => {
         } finally {
             setLoadingHostels(false);
         }
+    };
+
+    const handleSubmit = async () => {
+        const hasCity = !!selectedCity;
+        const hasArea = !!selectedArea;
+        setErrors({ city: !hasCity, area: !hasArea });
+
+        if (!hasCity || !hasArea) return;
+
+        setSearchParams({ city: selectedCity, area: selectedArea }); // ✅ Save to URL
+        setSubmitClicked(true);
+        setTimeout(() => {
+            secondBoxRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+
+        fetchHostelsData(selectedCity, selectedArea); // ✅ handle duplicate logic
     };
 
     return (
@@ -233,28 +274,33 @@ const HostelsList = () => {
                     {/* Optional: Add illustrations or promotional content */}
                 </div>
             </Box>
+
             {submitClicked && (
                 <Box ref={secondBoxRef} className="second-box" sx={{ px: 2, py: 4 }}>
                     <Typography variant="h5" className='hero-heading-2'>
                         Hostels in Your Area
                     </Typography>
 
+                    <div className='search-container'>
+                        <TextField
+                            id="outlined-basic"
+                            label="Search for Hostel"
+                            variant="outlined"
+                            className="custom-textfield"
+                        />
+                    </div>
+
                     {loadingHostels ? (
                         <HostelCardSkeleton />
                     ) : hostels.length === 0 ? (
                         <Typography sx={{ mb: 2, textAlign: 'center' }}>No hostels found</Typography>
                     ) : (
-
                         <ul className='hostels-list-conatiner'>
-                            {
-                                hostels.map((hostel) => <HostelCard hostel={hostel} key={hostel.id} />)
-                            }
+                            {hostels.map((hostel) => <HostelCard hostel={hostel} key={hostel.id} />)}
                         </ul>
-
                     )}
                 </Box>
             )}
-
 
             <Snackbar
                 open={openErrorToast}
